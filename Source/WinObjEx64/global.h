@@ -36,6 +36,7 @@
 #pragma warning(disable: 4390) // empty controlled statement
 #pragma warning(disable: 6320) // Exception-filter expression is the constant EXCEPTION_EXECUTE_HANDLER.
 #pragma warning(disable: 6258) // Using TerminateThread does not allow proper thread clean up.
+#pragma warning(disable: 4706) // assignment within conditional expression
 
 // C++ meaningless warnings
 #pragma warning(disable: 26446)

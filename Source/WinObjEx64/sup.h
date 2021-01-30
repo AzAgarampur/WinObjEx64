@@ -288,9 +288,9 @@ BOOL supListViewAddCopyValueItem(
     _Out_ INT* pColumnHit);
 
 VOID supSetMenuIcon(
-    _In_ HMENU hMenu,
-    _In_ UINT Item,
-    _In_ ULONG_PTR IconData);
+	_In_ HMENU hMenu,
+	_In_ UINT item,
+	_In_ HICON icon);
 
 VOID supSetGotoLinkTargetToolButtonState(
     _In_ HWND hwnd,
@@ -785,3 +785,7 @@ ULONG supAddLVColumnsFromArray(
     _In_ HWND ListView,
     _In_ PLVCOLUMNS_DATA ColumnsData,
     _In_ ULONG NumberOfColumns);
+
+HBITMAP supGetIconBitmap(
+    _In_ HICON icon
+);

@@ -1412,18 +1412,16 @@ BOOL supListViewCopyItemValueToClipboard(
 *
 */
 VOID supSetMenuIcon(
-    _In_ HMENU hMenu,
-    _In_ UINT Item,
-    _In_ ULONG_PTR IconData
+	_In_ HMENU hMenu,
+	_In_ UINT item,
+	_In_ HICON icon
 )
 {
     MENUITEMINFO mii;
-    RtlSecureZeroMemory(&mii, sizeof(mii));
-    mii.cbSize = sizeof(mii);
-    mii.fMask = MIIM_BITMAP | MIIM_DATA;
-    mii.hbmpItem = HBMMENU_CALLBACK;
-    mii.dwItemData = IconData;
-    SetMenuItemInfo(hMenu, Item, FALSE, &mii);
+    mii.cbSize = sizeof(MENUITEMINFO);
+    mii.fMask = MIIM_BITMAP;
+    mii.hbmpItem = supGetIconBitmap(icon);
+    SetMenuItemInfo(hMenu, item, FALSE, &mii);
 }
 
 /*
@@ -7389,4 +7387,79 @@ ULONG supAddLVColumnsFromArray(
     }   
 
     return iColumn;
+}
+
+/*
+* supGetIconBitmap
+*
+* Purpose:
+*
+* Convert an HICON into a 32-bit pre-multiplied ARGB bitmap. This function destroys the passed icon.
+*
+*/
+HBITMAP supGetIconBitmap(
+    _In_ HICON icon
+)
+{
+    HDC hdcDest, bufferedHdc;
+    RECT iconSize;
+    HGDIOBJ oldObj = NULL;
+    BITMAPINFO bmi;
+    HBITMAP iconBmp = NULL;
+    BLENDFUNCTION blendFunction;
+    HPAINTBUFFER paintBuffer = NULL;
+    BP_PAINTPARAMS bpParams;
+
+    do
+    {
+        iconSize.left = 0;
+        iconSize.top = 0;
+        iconSize.right = GetSystemMetricsForDpi(SM_CXSMICON, g_WinObj.CurrentDPI);
+        iconSize.bottom = GetSystemMetricsForDpi(SM_CYSMICON, g_WinObj.CurrentDPI);
+    	
+        if (!((hdcDest = CreateCompatibleDC(NULL))))
+            break;
+
+        RtlSecureZeroMemory(&bmi, sizeof(BITMAPINFO));
+        bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        bmi.bmiHeader.biWidth = iconSize.right;
+        bmi.bmiHeader.biHeight = iconSize.bottom;
+        bmi.bmiHeader.biPlanes = 1;
+        bmi.bmiHeader.biBitCount = 32;
+        bmi.bmiHeader.biCompression = BI_RGB;
+#pragma warning(disable:6387)
+    	if (!((iconBmp = CreateDIBSection(hdcDest, &bmi, DIB_RGB_COLORS, NULL, NULL, 0))))
+#pragma warning(default:6387)
+            break;
+
+        if (!((oldObj = SelectObject(hdcDest, iconBmp))))
+            break;
+
+        blendFunction.BlendOp = AC_SRC_OVER;
+        blendFunction.BlendFlags = 0;
+        blendFunction.SourceConstantAlpha = 255;
+        blendFunction.AlphaFormat = AC_SRC_ALPHA;
+
+        bpParams.cbSize = sizeof(BP_PAINTPARAMS);
+        bpParams.dwFlags = BPPF_ERASE;
+        bpParams.pBlendFunction = &blendFunction;
+        bpParams.prcExclude = NULL;
+
+        if (!((paintBuffer = BeginBufferedPaint(hdcDest, &iconSize, BPBF_DIB, &bpParams, &bufferedHdc))))
+            break;
+
+        DrawIconEx(bufferedHdc, 0, 0, icon, iconSize.right, iconSize.bottom, 0, NULL, DI_NORMAL);
+    } while (FALSE);
+
+    if (paintBuffer)
+        EndBufferedPaint(paintBuffer, TRUE);
+
+    if (oldObj)
+        SelectObject(hdcDest, oldObj);
+	
+    if (hdcDest)
+        DeleteDC(hdcDest);
+    DestroyIcon(icon);
+
+    return iconBmp;
 }
