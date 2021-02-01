@@ -1437,16 +1437,16 @@ VOID supCreateToolbarButtons(
 )
 {
     TBBUTTON tbButtons[] = {
-        { 0, ID_OBJECT_PROPERTIES, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, -1 },
-        { 10, 0, 0, BTNS_SEP, {0}, 0, -1 },
-        { 1, ID_VIEW_REFRESH, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, -1 },
-        { 7, ID_VIEW_DISPLAYGRID, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, -1 },
-        { 10, 0, 0, BTNS_SEP, {0}, 0, -1 },
-        { 2, ID_FIND_FINDOBJECT, TBSTATE_ENABLED, BTNS_BUTTON, {0}, 0, -1 }
+        { 0, ID_VIEW_REFRESH, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, (INT_PTR)L"Refresh" },
+        { 0, ID_OBJECT_PROPERTIES, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, (INT_PTR)L"Properties" },
+        { 0, 0, 0, BTNS_SEP, {0}, 0, -1 },
+        { 0, ID_VIEW_DISPLAYGRID, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, (INT_PTR)L"Show/hide gridlines" },
+        { 0, ID_FIND_FINDOBJECT, TBSTATE_ENABLED, BTNS_BUTTON | BTNS_AUTOSIZE, {0}, 0, (INT_PTR)L"Advanced search" }/*,
+        { 10, 0, 0, BTNS_SEP, {0}, 0, -1 }*/
     };
 
-    SendMessage(hWndToolbar, TB_SETIMAGELIST, 0, (LPARAM)g_ToolBarMenuImages);
-    SendMessage(hWndToolbar, TB_LOADIMAGES, (WPARAM)IDB_STD_SMALL_COLOR, (LPARAM)HINST_COMMCTRL);
+    //SendMessage(hWndToolbar, TB_SETIMAGELIST, 0, (LPARAM)g_ToolBarMenuImages);
+    //SendMessage(hWndToolbar, TB_LOADIMAGES, (WPARAM)IDB_STD_SMALL_COLOR, (LPARAM)HINST_COMMCTRL);
     SendMessage(hWndToolbar, TB_BUTTONSTRUCTSIZE, (WPARAM)sizeof(TBBUTTON), 0);
     SendMessage(hWndToolbar, TB_ADDBUTTONS, (WPARAM)RTL_NUMBER_OF(tbButtons), (LPARAM)&tbButtons);
     SendMessage(hWndToolbar, TB_AUTOSIZE, 0, 0);

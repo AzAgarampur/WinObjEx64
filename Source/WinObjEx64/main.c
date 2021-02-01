@@ -1453,8 +1453,8 @@ UINT WinObjExMain()
             0,
             TOOLBARCLASSNAME,
             NULL,
-            WS_VISIBLE | WS_CHILD | CCS_TOP |
-            TBSTYLE_FLAT | TBSTYLE_TRANSPARENT | TBSTYLE_TOOLTIPS,
+            WS_VISIBLE | WS_CHILD | CCS_NODIVIDER | 
+            TBSTYLE_FLAT | TBSTYLE_TRANSPARENT | TBSTYLE_LIST,
             0,
             0,
             0,
@@ -1624,9 +1624,10 @@ UINT WinObjExMain()
         }
         hMenu = GetSubMenu(GetMenu(MainWindow), IDMM_OBJECT);
         if (hMenu && g_ListViewImages) {
-
-            supSetMenuIcon(hMenu, ID_OBJECT_PROPERTIES,
-                           ImageList_ExtractIcon(g_WinObj.hInstance, g_ToolBarMenuImages, 0));
+            hIcon = supGetStockIcon(SIID_SETTINGS, SHGSI_ICON | SHGSI_SMALLICON);
+            if (hIcon) {
+                supSetMenuIcon(hMenu, ID_OBJECT_PROPERTIES, hIcon);
+            }
 
             supSetMenuIcon(hMenu, ID_OBJECT_GOTOLINKTARGET,
                            ImageList_ExtractIcon(g_WinObj.hInstance,
@@ -1637,8 +1638,10 @@ UINT WinObjExMain()
         //set object -> find object menu image
         hMenu = GetSubMenu(GetMenu(MainWindow), IDMM_FIND);
         if (hMenu && g_ToolBarMenuImages) {
-            supSetMenuIcon(hMenu, ID_FIND_FINDOBJECT,
-                           ImageList_ExtractIcon(g_WinObj.hInstance, g_ToolBarMenuImages, 2));
+            hIcon = supGetStockIcon(SIID_FIND, SHGSI_ICON | SHGSI_SMALLICON);
+            if (hIcon) {
+	            supSetMenuIcon(hMenu, ID_FIND_FINDOBJECT, hIcon);
+            }
         }
 
         //
